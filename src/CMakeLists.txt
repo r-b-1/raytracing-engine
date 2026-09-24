@@ -5,8 +5,11 @@ add_library (cs4212-util
   camera.h
   color.h
   vec3.h
+  ray.h
+  framebuffer.h
+  framebuffer.cc
 )
 target_compile_definitions(cs4212-util PUBLIC HAS_GLM)
 target_link_libraries(cs4212-util PRIVATE Boost::program_options)
+target_link_libraries(cs4212-util PRIVATE PNG::PNG)
 target_link_libraries(cs4212-util PUBLIC glm::glm)
-
