@@ -126,3 +126,17 @@ Then, when you restart your terminals, you should be able to run the vcpkg progr
 vcpkg
 ```
 
+```
+cmake --build buildVCPKG main
+```
+then...
+```
+ ./buildVCPkg/main > image.png
+ ```
+
+ NOTE: For this to work and create a main executable I needed to add 
+ ```
+ add_executable(main
+  src/main.cc)
+  ```
+  to the CMakeList.txt
