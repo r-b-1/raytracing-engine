@@ -6,10 +6,13 @@ add_library (cs4212-util
   color.h
   vec3.h
   ray.h
+  aabb.h
+  shape.h
+  sphere.h
+  triangle.h
+  hittable_list.h
   framebuffer.h
   framebuffer.cc
-  shape.h
-  hittable_list.h
 )
 target_compile_definitions(cs4212-util PUBLIC HAS_GLM)
 target_link_libraries(cs4212-util PRIVATE Boost::program_options)

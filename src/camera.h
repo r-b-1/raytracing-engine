@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <string>
 
 #include "framebuffer.h"
 #include "color.h"
@@ -17,40 +18,51 @@ class camera{
     int image_width = 256;
     int image_height = 256;
 
-    void render(const Shape& world) {
+    // R is the record type the world produces -- SphereHitStruct for spheres,
+    // TriangleHitStruct for a mesh.
+    //
+    // A list holds one shape family, so a scene mixing spheres and triangles
+    // needs one render() call per list. `filename` keeps those from clobbering
+    // each other on disk.
+    template<typename R>
+    void render(const Shape& world, const std::string& filename = "image.png") {
         initialize();
         for (int j = 0; j < image_height; j++) {
             for (int i = 0; i < image_width; i++) {
                 auto u = double(i);
                 auto v = double(j);
-                auto pixel_color = ray_color(ray(camera_center,
-                                                  pixel00_loc + u*pixel_delta_u
-                                                  + v*pixel_delta_v - camera_center),
-                                             world);
+                auto pixel_color = ray_color<R>(ray(camera_center,
+                                                      pixel00_loc + u*pixel_delta_u
+                                                      + v*pixel_delta_v - camera_center),
+                                                 world);
                 framebuffer.setPixel(i, j, pixel_color);
             }
         }
-        framebuffer.exportAsPNG("image.png");
+        framebuffer.exportAsPNG(filename);
     }
-    
-
-
-
-
 
     private:
     point3 camera_center = point3(0, 0, 0);
     vec3 pixel_delta_u, pixel_delta_v, pixel00_loc;
 
+    template<typename R>
     color ray_color(const ray& r, const Shape& world) const {
-    HitRecord rec;
-    if (world.hit(r, 0.0, std::numeric_limits<double>::infinity(), rec)) {
-        return 0.5 * (rec.normal + color(1, 1, 1));
+        double tmax = std::numeric_limits<double>::infinity();
+        R rec;
+        if (world.intersect(r, k_tmin, tmax, rec)) {
+            return 0.5 * (rec.normal() + color(1, 1, 1));
+        }
+        vec3 unit_direction = unit_vector(r.direction());
+        auto a = 0.5 * (unit_direction.y() + 1.0);
+        return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
     }
-    vec3 unit_direction = unit_vector(r.direction());
-    auto a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
-}
+
+    // Nearest hit the camera will accept. The week 4 slides suggest 1.0, to
+    // reject geometry at or in front of the image plane, but this scene's
+    // sphere sits at t ~= 0.5, so that would blank the whole image. A small
+    // epsilon just stops a ray from registering the surface it starts on.
+    static constexpr double k_tmin = 0.001;
+
     Framebuffer framebuffer;
 
 

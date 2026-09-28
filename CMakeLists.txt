@@ -116,6 +116,5 @@ add_subdirectory(OpenGL)
 enable_testing()
 add_subdirectory(utests src/png++)
 add_executable(main
-  src/main.cc
-  src/framebuffer.cc)
-target_link_libraries(main PRIVATE PNG::PNG)
+  src/main.cc)
+target_link_libraries(main PRIVATE cs4212-util)
