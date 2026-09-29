@@ -35,6 +35,7 @@ class camera{
         framebuffer.exportAsPNG(filename);
     }
 
+
     private:
     point3 camera_center = point3(0, 0, 0);
     vec3 pixel_delta_u, pixel_delta_v, pixel00_loc;

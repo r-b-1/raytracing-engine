@@ -16,12 +16,44 @@ int main() {
     // scene.objects.push_back(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
     // scene.objects.push_back(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
 
-    scene.objects.push_back(std::make_shared<triangle>(point3(-0.7, -0.6, -1), // Bottom left
-                                                       point3(0.4, -0.6, -1), // Bottom Right
-                                                       point3(-0.7, 0.6, -1))); // Top Left
-    scene.objects.push_back(std::make_shared<triangle>(point3(0.4, 0.6, -1), // Top Right
-                                                       point3(-0.7, 0.6, -1), // Top Left
-                                                       point3(0.4, -0.6, -1))); // Bottom Right
+    // Front Face
+    scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, -0.5, -1), // Bottom left
+                                                       point3(0.5, -0.5, -1), // Bottom Right
+                                                       point3(-0.5, 0.5, -1))); // Top Left
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.5, 0.5, -1), // Top Right
+                                                       point3(-0.5, 0.5, -1), // Top Left
+                                                       point3(0.5, -0.5, -1))); // Bottom Right
+    // Back Face
+    scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, -0.5, -2), // Bottom left
+                                                       point3(0.5, -0.5, -2), // Bottom Right
+                                                       point3(-0.5, 0.5, -2))); // Top Left
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.5, 0.5, -2), // Top Right
+                                                       point3(-0.5, 0.5, -2), // Top Left
+                                                       point3(0.5, -0.5, -2))); // Bottom Right
+
+
+    // Bottom Face
+    scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, -0.5, -1), // Bottom left
+                                                       point3(0.5, -0.5, -2), // Bottom Right
+                                                       point3(-0.5, -0.5, -1))); // Top Left
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.5, -0.5, -1), // Top Right
+                                                       point3(-0.5, -0.5, -2), // Top Left
+                                                       point3(0.5, -0.5, -1))); // Bottom Right
+    // Top Face
+    scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, 0.5, -1), // Bottom left
+                                                       point3(0.5, 0.5, -2), // Bottom Right
+                                                       point3(-0.5, 0.5, -1))); // Top Left
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.5, -.5, -1), // Top Right
+                                                       point3(-0.5, 0.5, -2), // Top Left
+                                                       point3(0.5, 0.5, -1))); // Bottom Right
+    
+    // Right Face
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.5, -0.5, -1), // Bottom left
+                                                       point3(0.5, -0.5, -2), // Bottom Right
+                                                       point3(0.5, 0.5, -1))); // Top Left
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.5, 0.5, -2), // Top Right
+                                                       point3(0.5, 0.5, -1), // Top Left
+                                                       point3(0.5, -0.5, -2))); // Bottom Right        
 
     cam.render(scene, "scene.png");
 }
