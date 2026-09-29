@@ -13,15 +13,15 @@ int main() {
 
     // Both shape types belong to one scene. The closest hit determines which
     // surface is visible at each pixel, regardless of insertion order.
-    scene.objects.push_back(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
-    scene.objects.push_back(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
+    // scene.objects.push_back(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
+    // scene.objects.push_back(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
 
-    scene.objects.push_back(std::make_shared<triangle>(point3(-0.4, -0.6, -1),
-                                                       point3(0.4, -0.6, -1),
-                                                       point3(0.0, 0.6, -2)));
-    scene.objects.push_back(std::make_shared<triangle>(point3(0.7, 0.3, -1),
-                                                       point3(0.7, 0.5, -1),
-                                                       point3(0.0, 0.4, -3)));
+    scene.objects.push_back(std::make_shared<triangle>(point3(-0.7, -0.6, -1), // Bottom left
+                                                       point3(0.4, -0.6, -1), // Bottom Right
+                                                       point3(-0.7, 0.6, -1))); // Top Left
+    scene.objects.push_back(std::make_shared<triangle>(point3(0.4, 0.6, -1), // Top Right
+                                                       point3(-0.7, 0.6, -1), // Top Left
+                                                       point3(0.4, -0.6, -1))); // Bottom Right
 
     cam.render(scene, "scene.png");
 }
