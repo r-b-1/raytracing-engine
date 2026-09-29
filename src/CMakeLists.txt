@@ -3,6 +3,8 @@ add_library (cs4212-util
   handleGraphicsArgs.cpp handleGraphicsArgs.h
   model_obj.cpp model_obj.h
   camera.h
+  perspective_camera.h
+  orthographic_camera.h
   color.h
   vec3.h
   ray.h

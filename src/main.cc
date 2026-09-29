@@ -1,13 +1,14 @@
 #include <memory>
 
-#include "camera.h"
+#include "perspective_camera.h"
+#include "orthographic_camera.h"
 #include "scene.h"
 #include "sphere.h"
 #include "triangle.h"
 #include "vec3.h"
 
 int main() {
-    camera cam;
+    PerspectiveCamera cam;
 
     Scene scene;
 
@@ -22,7 +23,7 @@ int main() {
     // scene.objects.push_back(std::make_shared<sphere>(point3(0, 0, -1.5), 0.25));
 
 
-    // // Front Face
+    // // Cool Pyramid
     // scene.objects.push_back(std::make_shared<triangle>(point3(0, 0, -1),
     //                                                    point3(-0.5, -0.5, -2), 
     //                                                    point3(-0.5, 0.5, -2)));
@@ -44,6 +45,8 @@ int main() {
     scene.objects.push_back(std::make_shared<triangle>(point3(0.5, 0.5, -1), // Top Right
                                                        point3(-0.5, 0.5, -1), // Top Left
                                                        point3(0.5, -0.5, -1))); // Bottom Right
+
+
     // Back Face
     scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, -0.5, -2), // Bottom left
                                                        point3(0.5, -0.5, -2), // Bottom Right
@@ -60,6 +63,8 @@ int main() {
     scene.objects.push_back(std::make_shared<triangle>(point3(0.5, -0.5, -1), // Top Right
                                                        point3(-0.5, -0.5, -1), // Top Left
                                                        point3(0.5, -0.5, -2))); // Bottom Right
+
+
     // Top Face
     scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, 0.5, -1), // Bottom left
                                                        point3(0.5, 0.5, -1), // Bottom Right
@@ -68,6 +73,8 @@ int main() {
                                                        point3(-0.5, 0.5, -2), // Top Left
                                                        point3(0.5, 0.5, -1))); // Bottom Right
     
+
+
     // Right Face
     scene.objects.push_back(std::make_shared<triangle>(point3(0.5, -0.5, -1), // Bottom left
                                                        point3(0.5, -0.5, -2), // Bottom Right
@@ -75,6 +82,8 @@ int main() {
     scene.objects.push_back(std::make_shared<triangle>(point3(0.5, 0.5, -2), // Top Right
                                                        point3(0.5, 0.5, -1), // Top Left
                                                        point3(0.5, -0.5, -2))); // Bottom Right    
+                 
+                                                       
                                                        
     // Left Face
     scene.objects.push_back(std::make_shared<triangle>(point3(-0.5, -0.5, -1), // Bottom left
@@ -85,4 +94,13 @@ int main() {
                                                        point3(-0.5, -0.5, -2))); // Bottom Right  
 
     cam.render(scene, "scene.png");
+
+    // Compare the same scene and camera pose using parallel rays.
+    OrthographicCamera ortho;
+    ortho.lookfrom = cam.lookfrom;
+    ortho.lookat = cam.lookat;
+    ortho.vup = cam.vup;
+    ortho.image_width = cam.image_width;
+    ortho.aspect_ratio = cam.aspect_ratio;
+    ortho.render(scene, "scene_orthographic.png");
 }

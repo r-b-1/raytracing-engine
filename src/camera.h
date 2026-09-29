@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <algorithm>
 #include <limits>
 #include <string>
 
@@ -14,6 +13,10 @@
 
 class camera{
     public:
+
+    // Allows a derived camera to be destroyed through a camera pointer.
+    virtual ~camera() = default;
+
     float aspect_ratio = 1;
     int image_width = 500;
     int image_height = 500;
@@ -26,12 +29,11 @@ class camera{
         initialize();
         for (int j = 0; j < image_height; j++) {
             for (int i = 0; i < image_width; i++) {
-                auto u = double(i);
-                auto v = double(j);
-                auto pixel_color = ray_color(ray(camera_center,
-                                                 pixel00_loc + u*pixel_delta_u
-                                                 + v*pixel_delta_v - camera_center),
-                                             scene);
+                point3 pixel_position =
+                    pixel00_loc + i * pixel_delta_u + j * pixel_delta_v;
+                // The derived camera chooses the ray's origin and direction.
+                ray r = make_ray(pixel_position);
+                color pixel_color = ray_color(r, scene);
                 framebuffer.setPixel(i, j, pixel_color);
             }
         }
@@ -40,8 +42,6 @@ class camera{
 
 
     private:
-    point3 camera_center = point3(0, 0, 0);
-    vec3 pixel_delta_u, pixel_delta_v, pixel00_loc;
 
     color ray_color(const ray& r, const Scene& scene) const {
         double tmax = std::numeric_limits<double>::infinity();
@@ -54,10 +54,7 @@ class camera{
         return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
     }
 
-    // Nearest hit the camera will accept. The week 4 slides suggest 1.0, to
-    // reject geometry at or in front of the image plane, but this scene's
-    // sphere sits at t ~= 0.5, so that would blank the whole image. A small
-    // epsilon just stops a ray from registering the surface it starts on.
+    // A small positive lower bound excludes hits at the ray's own origin.
     static constexpr double k_tmin = 0.001;
 
     Framebuffer framebuffer;
@@ -71,31 +68,43 @@ class camera{
 
         camera_center = lookfrom;
 
-        vec3 w = unit_vector(lookfrom - lookat); // Camera backward
-        vec3 u = unit_vector(cross(vup, w));     // Camera right
-        vec3 v = cross(w, u);                   // Camera up
+        // These axes orient the pixel grid. Store w for the derived cameras.
+        // lookfrom must differ from lookat; vup must not be parallel to w.
+        w = unit_vector(lookfrom - lookat);
+        vec3 u = unit_vector(cross(vup, w));
+        vec3 v = cross(w, u);
 
-        auto focal_length = 1.0;
-        auto viewport_height = 2.0;
-        auto viewport_width = viewport_height * (double(image_width)/image_height);
+        double viewport_height = 2.0;
+        double viewport_width =
+            viewport_height * (double(image_width) / image_height);
 
-        // Across the image: camera right.
-        // Down the image: negative camera up, matching PNG row order.
-        auto viewport_u = viewport_width * u;
-        auto viewport_v = -viewport_height * v;
+        vec3 viewport_u = viewport_width * u;
+        vec3 viewport_v = -viewport_height * v;
 
         pixel_delta_u = viewport_u / image_width;
         pixel_delta_v = viewport_v / image_height;
 
-        auto viewport_upper_left =
-            camera_center - focal_length * w
-            - viewport_u / 2
-            - viewport_v / 2;
+        // This shared grid passes through the camera position. Perspective
+        // uses its offsets for directions; orthographic uses it for origins.
+        point3 upper_left =
+            camera_center - viewport_u / 2 - viewport_v / 2;
 
         pixel00_loc =
-            viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+            upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
     }
+
+    protected:
+    point3 camera_center;
+    vec3 w; // Camera's backward direction
+
+    point3 pixel00_loc;
+    vec3 pixel_delta_u, pixel_delta_v;
+
+    // This pure virtual function makes camera abstract: each camera type
+    // supplies its own projection while sharing the same rendering loop.
+    virtual ray make_ray(const point3& pixel_position) const = 0;
+
 };
 
 

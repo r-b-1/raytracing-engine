@@ -20,7 +20,8 @@ include(Catch)
 set(UTESTS 
   utest_Success
   utest_Failure
-  utest_Scene)
+  utest_Scene
+  utest_Camera)
 
 # 
 # For each of the executables named in ${UTESTS}, compile them into a
