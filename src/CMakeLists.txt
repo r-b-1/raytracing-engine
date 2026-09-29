@@ -6,11 +6,10 @@ add_library (cs4212-util
   color.h
   vec3.h
   ray.h
-  aabb.h
   shape.h
   sphere.h
   triangle.h
-  hittable_list.h
+  scene.h
   framebuffer.h
   framebuffer.cc
 )

@@ -19,7 +19,8 @@ include(Catch)
 # 
 set(UTESTS 
   utest_Success
-  utest_Failure)
+  utest_Failure
+  utest_Scene)
 
 # 
 # For each of the executables named in ${UTESTS}, compile them into a
@@ -36,4 +37,3 @@ foreach(uexec ${UTESTS})
   # add_test(NAME ${uexec} COMMAND $<TARGET_FILE:${uexec}>)
   catch_discover_tests(${uexec})
 endforeach(uexec)
-
